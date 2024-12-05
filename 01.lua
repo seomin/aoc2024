@@ -1,3 +1,5 @@
+#!/usr/bin/env lua
+
 local l1 = {}
 local l2 = {}
 for l in io.lines("01.txt") do

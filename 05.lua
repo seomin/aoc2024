@@ -43,10 +43,17 @@ local function middle(update)
 end
 
 local sum = 0
+local sum2 = 0
 for _, update in pairs(updates) do
 	if valid(update) then
 		sum = sum + middle(update)
+	else
+		table.sort(update, function(a, b)
+			return rules[a] and rules[a][b]
+		end)
+		sum2 = sum2 + middle(update)
 	end
 end
 
 print("p1", sum)
+print("p2", sum2)

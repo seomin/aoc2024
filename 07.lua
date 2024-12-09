@@ -1,17 +1,7 @@
 #!/usr/bin/env lua
 
-local function eval(eq)
-	local eqString = "result = " .. eq
-	-- print(eqString)
-	local eqF = load(eqString)
-	assert(eqF, "could not load")
-	eqF()
-	return result
-end
-
 local canBuild
-canBuild = function(target, currentEq, index, operands)
-	local currentValue = eval(currentEq)
+canBuild = function(target, currentValue, index, operands, part)
 	if index > #operands then
 		return target == currentValue
 	end
@@ -19,17 +9,26 @@ canBuild = function(target, currentEq, index, operands)
 		return false
 	end
 
-	if canBuild(target, "(" .. currentEq .. ")+" .. tostring(operands[index]), index + 1, operands) then
+	local currentOp = operands[index]
+	if canBuild(target, currentValue + currentOp, index + 1, operands, part) then
 		return true
 	end
 
-	if canBuild(target, "(" .. currentEq .. ")*" .. tostring(operands[index]), index + 1, operands) then
+	if canBuild(target, currentValue * currentOp, index + 1, operands, part) then
 		return true
+	end
+
+	if part == 2 then
+		local newValue = tonumber(tostring(currentValue) .. tostring(currentOp))
+		if canBuild(target, newValue, index + 1, operands, part) then
+			return true
+		end
 	end
 	return false
 end
 
-local sum = 0
+local sum1 = 0
+local sum2 = 0
 local file = "07.txt"
 if arg[1] then
 	file = arg[1]
@@ -42,9 +41,13 @@ for line in io.lines(file) do
 	end
 	target = tonumber(target)
 
-	if canBuild(target, tostring(operands[1]), 2, operands) then
-		sum = sum + target
+	if canBuild(target, operands[1], 2, operands, 1) then
+		sum1 = sum1 + target
+	end
+	if canBuild(target, operands[1], 2, operands, 2) then
+		sum2 = sum2 + target
 	end
 end
 
-print("p1", sum)
+print("p1", sum1)
+print("p2", sum2)

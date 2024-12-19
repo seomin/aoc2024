@@ -82,8 +82,8 @@ end
 
 local function update()
 	for _, robot in pairs(robots) do
-		robot[1] = math.fmod(robot[1] + robot[3] + X, X)
-		robot[2] = math.fmod(robot[2] + robot[4] + Y, Y)
+		robot[1] = math.fmod(math.fmod(robot[1] + robot[3], X) + X, X)
+		robot[2] = math.fmod(math.fmod(robot[2] + robot[4], Y) + Y, Y)
 	end
 end
 
